@@ -29,7 +29,7 @@ const signUp = async (req, res) => {
         {
           fullName,
           email,
-          password: hashPassword, // Store the hashed password
+          password: hashPassword,
         },
       ],
       { session }
@@ -37,7 +37,6 @@ const signUp = async (req, res) => {
 
     await session.commitTransaction();
 
-    // Send welcome email (don't await to avoid delaying response)
     sendEmail(email, welcomeEmail(fullName));
 
     return res.status(201).json({
@@ -50,7 +49,6 @@ const signUp = async (req, res) => {
       },
     });
   } catch (error) {
-    // Only abort if transaction hasn't been committed
     if (session.inTransaction()) {
       await session.abortTransaction();
     }
